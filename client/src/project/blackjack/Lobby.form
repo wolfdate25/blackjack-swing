@@ -82,7 +82,10 @@
             <children>
               <component id="5f555" class="javax.swing.JList" binding="roomList">
                 <constraints/>
-                <properties/>
+                <properties>
+                  <model/>
+                  <selectionMode value="0"/>
+                </properties>
               </component>
             </children>
           </scrollpane>

@@ -9,11 +9,20 @@ public class Player {
     private int coin;
     private Vector<Card> playerCards;
 
+    private int idx = -1;
+
     public Player(String name) {
         this.name = name;
         this.score = 0;
         this.coin = 20;
         playerCards = new Vector<>(10);
+    }
+
+    public void setIdx(int n) {
+        this.idx = n;
+    }
+    public int getIdx() {
+        return this.idx;
     }
 
     public String getName() {
@@ -46,8 +55,10 @@ public class Player {
 
     public void updateScore() {
         Iterator<Card> itr = playerCards.iterator();
+        int sum = 0;
         while(itr.hasNext()) {
-            this.score = score+itr.next().getValue();
+            sum =score+itr.next().getValue();
         }
+        score = sum;
     }
 }

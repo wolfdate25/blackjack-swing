@@ -116,19 +116,20 @@ public class Field extends JPanel {
 
     public void setTitleBorder(int target, String name) {
         switch (target) {
-            case 1:
+            case 0:
                 p1TitleBorder.setTitle(name);
                 break;
-            case 2:
+            case 1:
                 p2TitleBorder.setTitle(name);
                 break;
-            case 3:
+            case 2:
                 p3TitleBorder.setTitle(name);
                 break;
-            case 4:
+            case 3:
                 p4TitleBorder.setTitle(name);
                 break;
         }
+        repaint();
     }
 
     public void reset() {
@@ -231,5 +232,10 @@ public class Field extends JPanel {
 //        g.drawRect(620, 140, 125, 500);
 
         paintDrawnCards();
+    }
+
+    public void setTimer(int timer) {
+        this.timer = timer;
+        repaint();
     }
 }
