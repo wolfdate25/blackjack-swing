@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class Player {
-    String name;
+    private String name;
     private int score;
     private int coin;
     private Vector<Card> playerCards;

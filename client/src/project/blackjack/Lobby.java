@@ -13,13 +13,14 @@ public class Lobby extends JFrame{
     private JLabel coinLabel;
     private JList roomList;
     private JButton enterRoom;
+    private JButton loginButton;
 
     Player player;
     DefaultListModel model;
 
     GameThread game;
 
-    public Lobby(Player player, GameThread game) {
+    public Lobby( GameThread game) {
         setTitle("Lobby");
         setContentPane(rootPanel);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -32,9 +33,13 @@ public class Lobby extends JFrame{
         // setup room list
 //        roomList = new JList(new DefaultListModel());
 
-        userLabel.setText("username: "+ player.getName());
-        coinLabel.setText("coin: " + player.getCoin());
 
+        if(player == null) {
+            userLabel.setText("먼저 로그인을 하세요");
+        } else {
+            userLabel.setText("username: " + player.getName());
+            coinLabel.setText("coin: " + player.getCoin());
+        }
         model = new DefaultListModel();
         roomList.setModel(model);
 
@@ -79,10 +84,21 @@ public class Lobby extends JFrame{
                 }
             }
         });
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Login login = new Login(game);
+            }
+        });
     }
 
     public void addRoom(String roomName, int players) {
         model.addElement(new Room(roomName,players));
+    }
+
+    public void setLabel(String name, int coin) {
+        userLabel.setText("username: " + name);
+        coinLabel.setText("coin: " + coin);
     }
 
     class Room {

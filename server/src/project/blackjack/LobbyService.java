@@ -8,6 +8,7 @@ public class LobbyService {
     private Vector<Player> playerList;
     private Vector<Room> roomList;
     Server frame;
+    JDBC db;
 
     int codeIndex = 0;
 
@@ -15,6 +16,7 @@ public class LobbyService {
         playerList = new Vector<>(50);
         roomList = new Vector<>(10);
         this.frame = frame;
+        this.db = new JDBC();
 
 //        PlayerServiceThread thread= new PlayerServiceThread(this);
 //        thread.start();
@@ -91,7 +93,7 @@ public class LobbyService {
     public Boolean checkDuplicateUserName(String name) {
         Iterator<Player > itr = playerList.iterator();
         while(itr.hasNext()) {
-            if (itr.next().getUsername() == name) {
+            if (itr.next().getUsername().equals(name)) {
                 return false;
             }
         }

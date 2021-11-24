@@ -2,6 +2,7 @@ package project.blackjack;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 public class Deck {
@@ -13,24 +14,22 @@ public class Deck {
         genNewDeck();
 
 
-        System.out.println(cards.size());
+//        System.out.println(cards.size());
 
     }
 
 
-    public Card getRandomCard() {
+    public Card getTheCard(String cardName) {
 
-        int index = random.nextInt(52);
-        Card result;
-        try {
-            result = cards.get(index);
-            cards.remove(index);
-        } catch (IndexOutOfBoundsException e) {
-            genNewDeck();
-            result = cards.get(index);
-            cards.remove(index);
+        Iterator<Card> itr = cards.iterator();
+        Card card;
+        while (itr.hasNext()) {
+            card = itr.next();
+            if (card.getName().equals(cardName)) {
+                return card;
+            }
         }
-        return result;
+        return null;
     }
 
     private void genNewDeck() {

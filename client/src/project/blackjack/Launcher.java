@@ -1,7 +1,6 @@
 package project.blackjack;
 
 import javax.swing.*;
-import java.util.Scanner;
 
 public class Launcher {
 
@@ -9,6 +8,7 @@ public class Launcher {
 
     public static void main(String[] args) {
 //        Room login = new Room("Player");
-        Login login = new Login();
+        Connect connect = new Connect();
+//        Login login = new Login();
     }
 }

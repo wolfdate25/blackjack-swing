@@ -3,6 +3,7 @@ package project.blackjack;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -28,6 +29,7 @@ public class Room extends JFrame {
 
     String roomName;
     GameThread game;
+    Dealer dealer;
 
     @Override
     public void dispose() {
@@ -58,6 +60,9 @@ public class Room extends JFrame {
         // Env initializing
         game.requestRoomEnv();
 
+        // Add dealer
+        dealer = new Dealer();
+
 
         coinField.setText("Coin: " + player.getCoin());
 
@@ -72,6 +77,19 @@ public class Room extends JFrame {
                 game.setLobbyVisible(true);
             }
         });
+
+        bet.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if ((e.getModifiers() & InputEvent.BUTTON1_DOWN_MASK) == 0) {
+
+                    game.requestBetCoin("10");
+                } else {
+                    game.requestBetCoin("1");
+                }
+            }
+        });
+
         split.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -86,14 +104,17 @@ public class Room extends JFrame {
                 chatArea.append(chatField.getText() + '\n');
             }
         });
+
         draw.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Card newCard = deck.getRandomCard();
+                game.requestDrawCard();
+
+                /*Card newCard = deck.cards.get(1);
                 int size = player.getPlayerCards().size();
                 player.addPlayerCards(newCard);
                 field.paintCard(newCard, 1, size);
-                field.paintScore(1, player.getScore());
+                field.paintScore(1, player.getScore());*/
             }
         });
     }
@@ -103,32 +124,69 @@ public class Room extends JFrame {
         if (players.size() < 4) {
             players.add(player);
             // 플레이어에게 인덱스 부과
-            int idx = 0;
+            int idx = 1;
             for (int s = 0; s < players.size(); s++) {
                 if (players.get(s).getIdx() == idx) {
                     idx++;
                 }
             }
+            // 플레이어 인덱스 부여
             player.setIdx(idx);
+            field.setTitleBorder(player.getIdx(), player.getName());
+            // 플레이어 초기 라벨 설정
+            field.setStatusLabel(idx, "대기");
+            field.setCoinLabel(idx, 0);
         }
-        field.setTitleBorder(player.getIdx(), player.getName());
 
-}
+    }
 
+    // {name}을 가진 플레이어를 제거한다.
     public void removePlayer(String name) {
-        // {name}을 가진 플레이어를 제거한다.
         Iterator<Player> itr = players.iterator();
         while (itr.hasNext()) {
             Player player = itr.next();
             if (player.getName().equals(name)) {
                 players.remove(player);
-                field.setTitleBorder(player.getIdx(), player.getName());
-
+                field.setTitleBorder(player.getIdx(), "Empty");
+                break;
             }
         }
     }
 
     public void setTimer(int timer) {
         field.setTimer(timer);
+    }
+
+    public void setBetCoin(String name, int coin) {
+        Iterator<Player> itr = players.iterator();
+        while (itr.hasNext()) {
+            Player player = itr.next();
+            if (player.getName().equals(name)) {
+                field.setCoinLabel(player.getIdx(), coin);
+                break;
+            }
+        }
+    }
+
+    public void drawCard(String name, String cardName) {
+        Card card = deck.getTheCard(cardName);
+        if (name.equals("Dealer")) {
+            dealer.addPlayerCards(card);
+            field.paintCard(card, 0, dealer.getCards().size());
+            field.paintScore(0, dealer.getScore());
+        }
+        Iterator<Player> itr = players.iterator();
+        while (itr.hasNext()) {
+            Player player = itr.next();
+            if (player.getName().equals(name)) {
+                int size = player.getPlayerCards().size();
+                if (card != null) {
+                    player.addPlayerCards(card);
+                    field.paintCard(card, player.getIdx(), size);
+                    field.paintScore(player.getIdx(), player.getScore());
+                }
+                break;
+            }
+        }
     }
 }
