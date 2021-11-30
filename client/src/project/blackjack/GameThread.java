@@ -126,6 +126,8 @@ public class GameThread extends Thread {
             case "209": // 방 초기화 패킷 수신
                 room.resetEnv();
                 break;
+            case "210": // 채팅 패킷 수신
+                room.appendChat(packet.name, packet.action);
         }
     }
 
@@ -253,6 +255,15 @@ public class GameThread extends Thread {
 
     public void requestDrawCard() {
         Packet packet = new Packet("204", "", "");
+        try {
+            oos.writeObject(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void requestChat(String text) {
+        Packet packet = new Packet("210", text, "");
         try {
             oos.writeObject(packet);
         } catch (IOException e) {

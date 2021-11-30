@@ -141,6 +141,8 @@ public class Player extends Thread {
                     room.drawCard(this);
                 }
                 break;
+            case "210": // 채팅 코드
+                room.sendPlayerChat(this,packet.name);
         }
     }
 
@@ -334,5 +336,9 @@ public class Player extends Thread {
 
     public void sendCoin() {
         sendPacket("107", String.valueOf(coin), "");
+    }
+
+    public void sendChat(String username, String chat) {
+        sendPacket("210",username,chat);
     }
 }

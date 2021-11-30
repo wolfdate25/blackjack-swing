@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -66,6 +67,20 @@ public class Room extends JFrame {
 
         setCoinField(player.getCoin());
 
+        // where is keyboard focus
+        chatField.requestFocus();
+
+        // keyboard event listener
+        chatField.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                System.out.println(e.getKeyCode());
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    sendMessage();
+                }
+            }
+        });
+
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -97,7 +112,8 @@ public class Room extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                chatArea.append(chatField.getText() + '\n');
+//                chatArea.append(chatField.getText() + '\n');
+                sendMessage();
             }
         });
 
@@ -113,6 +129,11 @@ public class Room extends JFrame {
                 field.paintScore(1, player.getScore());*/
             }
         });
+    }
+
+    private void sendMessage() {
+        game.requestChat(chatField.getText());
+        chatField.setText("");
     }
 
     public void addPlayer(Player player) {
@@ -213,5 +234,9 @@ public class Room extends JFrame {
             field.setStateLabel(player.getIdx(), "대기");
             field.setCoinLabel(player.getIdx(), 0);
         }
+    }
+
+    public void appendChat(String name, String text) {
+        chatArea.append(name + ": " + text + '\n');
     }
 }

@@ -333,4 +333,12 @@ public class Room extends Thread {
     public boolean canDraw() {
         return canDraw;
     }
+
+    public void sendPlayerChat(Player player, String chat) {
+        Iterator<Player> itr = players.iterator();
+        while (itr.hasNext()) {
+            Player otherPlayer = itr.next();
+            otherPlayer.sendChat(player.getUsername(), chat);
+        }
+    }
 }
