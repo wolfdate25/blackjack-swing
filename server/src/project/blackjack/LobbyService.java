@@ -43,12 +43,11 @@ public class LobbyService {
     }
 
 
-
-    public boolean createRoom(String roomName,Player player) {
+    public boolean createRoom(String roomName, Player player) {
         // 방 이름 중복 검사
         Iterator<Room> itr = roomList.iterator();
-        while(itr.hasNext()) {
-            if(itr.next().getRoomName().equals(roomName)) {
+        while (itr.hasNext()) {
+            if (itr.next().getRoomName().equals(roomName)) {
                 return false;
             }
         }
@@ -62,11 +61,16 @@ public class LobbyService {
         return true;
     }
 
+    // 플레이어가 방에 입장할 때 실행되는 메소드
     public boolean enterRoom(String roomCode, Player player) {
         Iterator<Room> itr = roomList.iterator();
         while (itr.hasNext()) {
             Room room = itr.next();
             if (room.getRoomName().equals(roomCode)) {
+                // 방의 게임이 진행중인 경우
+                if (room.isPlaying()) {
+                    return false;
+                }
                 room.addPlayer(player);
                 return true;
             }
@@ -91,13 +95,15 @@ public class LobbyService {
     }
 
     public Boolean checkDuplicateUserName(String name) {
-        Iterator<Player > itr = playerList.iterator();
-        while(itr.hasNext()) {
-            if (itr.next().getUsername().equals(name)) {
-                return false;
+        Iterator<Player> itr = playerList.iterator();
+        while (itr.hasNext()) {
+            Player player = itr.next();
+            if (player.getUsername() == null) continue;
+            if (player.getUsername().equals(name)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public Iterator<Room> getRoomIterator() {

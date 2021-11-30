@@ -134,7 +134,7 @@ public class Room extends JFrame {
             player.setIdx(idx);
             field.setTitleBorder(player.getIdx(), player.getName());
             // 플레이어 초기 라벨 설정
-            field.setStatusLabel(idx, "대기");
+            field.setStateLabel(idx, "대기");
             field.setCoinLabel(idx, 0);
         }
 
@@ -174,17 +174,29 @@ public class Room extends JFrame {
             dealer.addPlayerCards(card);
             field.paintCard(card, 0, dealer.getCards().size());
             field.paintScore(0, dealer.getScore());
+        } else {
+            Iterator<Player> itr = players.iterator();
+            while (itr.hasNext()) {
+                Player player = itr.next();
+                if (player.getName().equals(name)) {
+                    int size = player.getPlayerCards().size();
+                    if (card != null) {
+                        player.addPlayerCards(card);
+                        field.paintCard(card, player.getIdx(), size);
+                        field.paintScore(player.getIdx(), player.getScore());
+                    }
+                    break;
+                }
+            }
         }
+    }
+
+    public void setPlayerState(String name, String action) {
         Iterator<Player> itr = players.iterator();
         while (itr.hasNext()) {
             Player player = itr.next();
             if (player.getName().equals(name)) {
-                int size = player.getPlayerCards().size();
-                if (card != null) {
-                    player.addPlayerCards(card);
-                    field.paintCard(card, player.getIdx(), size);
-                    field.paintScore(player.getIdx(), player.getScore());
-                }
+                field.setStateLabel(player.getIdx(), action);
                 break;
             }
         }

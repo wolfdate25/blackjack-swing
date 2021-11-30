@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class GameThread extends Thread {
     private static final long serialVersionUID = 1L;
@@ -33,7 +32,7 @@ public class GameThread extends Thread {
 //            oos.writeObject(packet);
 
         lobby = new Lobby(this);
-        packet = new Packet("","","");
+        packet = new Packet("", "", "");
 
 //        } catch (IOException e) {
 //            e.printStackTrace();
@@ -62,7 +61,10 @@ public class GameThread extends Thread {
             String msg = String.format("Code : %s, Username: %s, action: %s", packet.code, packet.name, packet.action);
             System.out.println(msg);
 
-            codeAction(packet);
+            lobbyAction(packet);
+            if (room != null && room.isShowing()) {
+                gameAction(packet);
+            }
         }
     }
 
@@ -70,7 +72,7 @@ public class GameThread extends Thread {
         lobby.setVisible(set);
     }
 
-    private void codeAction(Packet packet) {
+    private void lobbyAction(Packet packet) {
         switch (packet.code) {
             case "100": // 계정 정보 수신
                 // 로그인이 성공하면
@@ -79,7 +81,7 @@ public class GameThread extends Thread {
                     player = new Player(packet.name);
                     // 서버로부터 받은 코인을 입력한다.
                     player.setCoin(Integer.parseInt(packet.action));
-                    lobby.setLabel(player.getName(),player.getCoin());
+                    lobby.setLabel(player.getName(), player.getCoin());
                 }
                 break;
             case "101": // 로그인 실패
@@ -88,26 +90,43 @@ public class GameThread extends Thread {
             case "102": // 방 목록 수신
                 lobby.addRoom(packet.name, Integer.parseInt(packet.action));
                 break;
+            case "104": // 방 개설 실패
+                break;
             case "103": // 방 개설 승인
-            case "200": // 방 접속 승인
+            case "105": // 방 접속 승인
                 String roomName = packet.name;
                 room = new Room(this, roomName, player);
                 lobby.setVisible(false);
                 break;
-            case "201": // 방 환경 정보 수신
-                receiveRoomEnv(packet);
-                break;
-            case "203": // 코인 배팅 액션 수신
-                receiveBetPlayer(packet.name,Integer.parseInt(packet.action));
-                break;
-            case "204": // 카드 드로우 액션 수신
-                receiveDrawPlayer(packet.name,packet.action);
+            case "106": // 방 접속 실패
+                JOptionPane.showMessageDialog(null, "게임이 이미 진행 중인 방에 입장할 수 없습니다.");
                 break;
         }
     }
 
+    private void gameAction(Packet packet) {
+        switch (packet.code) {
+            case "201": // 방 환경 정보 수신
+                receiveRoomEnv(packet);
+                break;
+            case "203": // 코인 배팅 액션 수신
+                receiveBetPlayer(packet.name, Integer.parseInt(packet.action));
+                break;
+            case "204": // 카드 드로우 액션 수신
+                receiveDrawPlayer(packet.name, packet.action);
+                break;
+            case "205": // 플레이어 상태 수신
+                receivePlayerState(packet.name, packet.action);
+                break;
+        }
+    }
+
+    private void receivePlayerState(String name, String action) {
+        room.setPlayerState(name, action);
+    }
+
     private void receiveDrawPlayer(String name, String card) {
-        room.drawCard(name,card);
+        room.drawCard(name, card);
     }
 
     private void receiveRoomEnv(Packet packet) {
@@ -117,14 +136,16 @@ public class GameThread extends Thread {
                 break;
             case "rplayer":
                 room.removePlayer(packet.action);
+                break;
             case "timer":
                 int timer = Integer.parseInt(packet.action);
                 room.setTimer(timer);
+                break;
         }
     }
 
     private void receiveBetPlayer(String username, int coin) {
-        room.setBetCoin(username,coin);
+        room.setBetCoin(username, coin);
     }
 
     private Packet readPacket() {
@@ -148,7 +169,7 @@ public class GameThread extends Thread {
     }
 
     public void requestCreateRoom(String name) {
-        Packet packet = new Packet ("103", name, "");
+        Packet packet = new Packet("103", name, "");
         try {
             oos.writeObject(packet);
         } catch (IOException e) {
@@ -176,7 +197,7 @@ public class GameThread extends Thread {
     }
 
     public void requestEnterRoom(String roomName) {
-        Packet packet = new Packet("200", roomName, "");
+        Packet packet = new Packet("105", roomName, "");
         try {
             oos.writeObject(packet);
         } catch (IOException e) {

@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Iterator;
+import java.util.Vector;
 
 public class Player extends Thread {
     private Socket client_socket;
@@ -13,11 +14,13 @@ public class Player extends Thread {
     private LobbyService service;
     private Room room;
 
-
+    // parameters
     private String username;
     private int coin = 0;
     private int betCoin = 0;
-    private int score = 0;
+    private Vector<Card> drawnCards;
+    private boolean canEnterTheRoom = true;
+    private int state = 0; // 0 = none(lose), 1 = win, 2 = blackjack, 3 = burst
 
     public Player(Socket client_socket, LobbyService service) {
         this.client_socket = client_socket;
@@ -29,6 +32,14 @@ public class Player extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        drawnCards = new Vector<>(6);
+    }
+
+    public void initParameters() {
+        coin = 0;
+        betCoin = 0;
+        drawnCards.clear();
+        state = 0;
     }
 
     public void run() {
@@ -50,7 +61,7 @@ public class Player extends Thread {
     // 동작 코드 실행
     private void codeAction(Packet packet) {
         if (packet.code.equals("100")) { // 로그인 요청 코드
-            if (service.checkDuplicateUserName(packet.name)) {
+            if (!service.checkDuplicateUserName(packet.name)) {
                 if (service.db.playerLogin(packet.name, packet.action)) {
                     this.username = packet.name;
                     coin = service.db.getPlayerCoin(packet.name);
@@ -89,24 +100,33 @@ public class Player extends Thread {
                     // 방 이름 없이 패킷이 왔을 때 동작
                 }
                 break;
-            case "200": // 방 입장 요청 코드
+            case "105": // 방 입장 요청 코드
                 service.frame.appendText("방입장 요청 동작 실행");
                 String name = packet.name;
                 if (!name.equals("") && room == null) { // 패킷 오작동 & 중복 입장 검사
-
-                    if (service.enterRoom(name, this)) {
-                        // 방에 입장하였을 때 플레이어에게 전송할 패킷
-                        sendPacket("200", room.getRoomName(), "");
+                    if (canEnterTheRoom) {
+                        if (service.enterRoom(name, this)) {
+                            // 방에 입장하였을 때 플레이어에게 전송할 패킷
+                            sendPacket("105", room.getRoomName(), "");
+                        } else {
+                            // 방에 입장하지 못하였을 때 플레이어에게 전송할 패킷(106)
+                            sendPacket("106", "reject", "");
+                        }
                     } else {
-                        // 방에 입장하지 못하였을 때 플레이어에게 전송할 패킷
-
+                        // 이미 입장중인 방이 있을 때 플레이어에게 전송할 패킷(106)
+                        sendPacket("106", "already", "");
                     }
                 }
                 break;
             case "201": // 방의 초기 환경 요청 코드
-                room.sendNewPlayer(this);
+                // 기존에 입장된 플레이어들을 전송
+                room.sendOldPlayers(this);
+                // 기존에 드로우된 카드들을 전송
+                room.sendDrawnCards(this);
+
                 break;
             case "202": // 방 퇴장 요청 코드
+                // service.leaveRoom(roomcode, player);
                 room.removePlayer(this);
                 room = null;
                 break;
@@ -118,21 +138,35 @@ public class Player extends Thread {
                 }
                 break;
             case "204": // 드로우 코드
-                drawCard();
+                if(room.canDraw() && state == 0) {
+                    room.drawCard(this);
+                }
                 break;
         }
     }
 
-    public void drawCard() {
-        Card card = room.deck.getRandomCard();
-        score += card.getValue();
-        room.sendCard(username,card.getName());
+    public void addCard(Card card) {
+        drawnCards.add(card);
+//        room.sendCard(username,card.getName());
+    }
 
+    public Vector<Card> getDrawnCards() {
+        return drawnCards;
+    }
+
+    public int getScore() {
+        Iterator<Card> itr = drawnCards.iterator();
+        int sum = 0;
+        while (itr.hasNext()) {
+            Card card = itr.next();
+            sum += card.getValue();
+        }
+        return sum;
     }
 
     private void betCoin(int coin) {
         // 게임이 시작중이지 않을 때
-        if (!room.isStart()) {
+        if (!room.isPlaying()) {
             // 베팅할 코인이 가진 코인보다 적으면
             if (betCoin < this.coin) {
                 // 배팅 금액을 늘린다
@@ -252,4 +286,39 @@ public class Player extends Thread {
 
     }
 
+    public boolean canEnterTheRoom() {
+        return canEnterTheRoom;
+    }
+
+    public boolean setCanEnterTheRoom(boolean canEnterTheRoom) {
+        return this.canEnterTheRoom = canEnterTheRoom;
+    }
+
+    public void sendEnvReset() {
+        sendPacket("209", "", "");
+    }
+
+    public void setPlayerState(int state) {
+        this.state = state;
+        room.sendStatus(this);
+    }
+
+    public int getPlayerState() {
+        return state;
+    }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public int addCoin(int coin) {
+        return this.coin += coin;
+    }
+    public int subCoin(int coin) {
+        return this.coin -= coin;
+    }
+
+    public void sendStatus(String username, int status) {
+        sendPacket("205", username, String.valueOf(status));
+    }
 }

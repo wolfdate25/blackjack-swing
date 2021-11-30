@@ -21,10 +21,10 @@ public class Field extends JPanel {
     private JLabel p2ScoreLabel;
     private JLabel p3ScoreLabel;
     private JLabel p4ScoreLabel;
-    private JLabel p1StatusLabel;
-    private JLabel p2StatusLabel;
-    private JLabel p3StatusLabel;
-    private JLabel p4StatusLabel;
+    private JLabel p1StateLabel;
+    private JLabel p2StateLabel;
+    private JLabel p3StateLabel;
+    private JLabel p4StateLabel;
     private JLabel p1CoinLabel;
     private JLabel p2CoinLabel;
     private JLabel p3CoinLabel;
@@ -118,35 +118,35 @@ public class Field extends JPanel {
         p4ScoreLabel.setFont(font);
         add(p4ScoreLabel);
 
-        JLabel statusLabel = new JLabel("상태",SwingConstants.CENTER);
-        statusLabel.setSize(60, 56);
-        statusLabel.setLocation(170, 550);
-        statusLabel.setFont(smallFont);
-        add(statusLabel);
+        JLabel StateLabel = new JLabel("상태",SwingConstants.CENTER);
+        StateLabel.setSize(60, 56);
+        StateLabel.setLocation(170, 550);
+        StateLabel.setFont(smallFont);
+        add(StateLabel);
 
-        p1StatusLabel = new JLabel("",SwingConstants.CENTER); // default 대기
-        p1StatusLabel.setSize(125, 56);
-        p1StatusLabel.setLocation(230, 550);
-        p1StatusLabel.setFont(font);
-        add(p1StatusLabel);
+        p1StateLabel = new JLabel("",SwingConstants.CENTER); // default 대기
+        p1StateLabel.setSize(125, 56);
+        p1StateLabel.setLocation(230, 550);
+        p1StateLabel.setFont(font);
+        add(p1StateLabel);
 
-        p2StatusLabel = new JLabel("",SwingConstants.CENTER);
-        p2StatusLabel.setSize(125, 56);
-        p2StatusLabel.setLocation(360, 550);
-        p2StatusLabel.setFont(font);
-        add(p2StatusLabel);
+        p2StateLabel = new JLabel("",SwingConstants.CENTER);
+        p2StateLabel.setSize(125, 56);
+        p2StateLabel.setLocation(360, 550);
+        p2StateLabel.setFont(font);
+        add(p2StateLabel);
 
-        p3StatusLabel = new JLabel("",SwingConstants.CENTER);
-        p3StatusLabel.setSize(125, 56);
-        p3StatusLabel.setLocation(490, 550);
-        p3StatusLabel.setFont(font);
-        add(p3StatusLabel);
+        p3StateLabel = new JLabel("",SwingConstants.CENTER);
+        p3StateLabel.setSize(125, 56);
+        p3StateLabel.setLocation(490, 550);
+        p3StateLabel.setFont(font);
+        add(p3StateLabel);
 
-        p4StatusLabel = new JLabel("",SwingConstants.CENTER);
-        p4StatusLabel.setSize(125, 56);
-        p4StatusLabel.setLocation(620, 550);
-        p4StatusLabel.setFont(font);
-        add(p4StatusLabel);
+        p4StateLabel = new JLabel("",SwingConstants.CENTER);
+        p4StateLabel.setSize(125, 56);
+        p4StateLabel.setLocation(620, 550);
+        p4StateLabel.setFont(font);
+        add(p4StateLabel);
 
         JLabel coinLabel = new JLabel("배팅액",SwingConstants.CENTER);
         coinLabel.setSize(60, 56);
@@ -184,19 +184,19 @@ public class Field extends JPanel {
 
     }
 
-    public void setStatusLabel(int target, String name) {
+    public void setStateLabel(int target, String name) {
         switch (target) {
-            case 1:
-                p1StatusLabel.setText(name);
+            case 1:s
+                p1StateLabel.setText(name);
                 break;
             case 2:
-                p2StatusLabel.setText(name);
+                p2StateLabel.setText(name);
                 break;
             case 3:
-                p3StatusLabel.setText(name);
+                p3StateLabel.setText(name);
                 break;
             case 4:
-                p4StatusLabel.setText(name);
+                p4StateLabel.setText(name);
                 break;
         }
         repaint();

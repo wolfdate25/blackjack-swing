@@ -71,4 +71,20 @@ public class JDBC {
         }
         return 0;
     }
+
+    public int setPlayerCoin(String name,int coin) {
+        int result =0 ;
+        String sql = "UPDATE player SET coin = ? WHERE name = ?";
+
+        try (PreparedStatement query = getConn().prepareStatement(sql)) {
+            query.setString(2, name);
+            query.setString(1, String.valueOf(coin));
+
+            result = query.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
+    }
 }
