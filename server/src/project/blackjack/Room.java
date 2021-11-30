@@ -92,9 +92,11 @@ public class Room extends Thread {
 
                     // 게임이 종료되었을 때
                     isPlaying = false;
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                     // 보상을 지급한다
                     sendReward();
+                    // 갱신된 코인 정보를 전송한다
+                    sendCoin();
 
                     // 딜러의 파라미터를 초기화한다
                     dealer.reset();
@@ -124,6 +126,13 @@ public class Room extends Thread {
         service.frame.appendText(roomName + " 방이 정리됩니다");
     }
 
+    // send player's coin to all players
+    private void sendCoin() {
+        for (Player player : players) {
+            player.sendCoin();
+        }
+    }
+
     private void startGame() throws InterruptedException {
         // 게임을 시작한다
         isPlaying = true;
@@ -138,7 +147,7 @@ public class Room extends Thread {
                 Thread.sleep(1000);
 
                 Player player = itr.next();
-                if (player.isReady()) {
+                if (player.isPlaying()) {
                     drawCard(player);
                 }
             }
@@ -160,18 +169,27 @@ public class Room extends Thread {
 
         // 딜러의 점수가 16 이하면 무조건 히트, 17 이상이면 무조건 스테이
         while (dealer.getScore() < 17) {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
             dealer.drawCard();
         }
 
         // 플레이어의 점수를 비교해 이겼는지 졌는지 판단한다.
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         itr = players.iterator();
         while (itr.hasNext()) {
             Player player = itr.next();
-            if (player.isReady()) {
-                if (player.getPlayerState() == 0 && player.getScore() > dealer.getScore()) {
-                    player.setPlayerState(1);
+            if (player.getPlayerState() == 2) { // 플레이중인 플레이어만
+                // 딜러가 버스트일 때
+                if (dealer.getScore() > 21) {
+                        player.setPlayerState(4);
+                } else if (dealer.getScore() == 21) { // 딜러가 블랙잭일 때
+                    player.setPlayerState(3);
+                } else if (dealer.getScore() > player.getScore()) { // 딜러가 점수가 많을 때
+                    player.setPlayerState(3);
+                } else if (dealer.getScore() == player.getScore()) { // 딜러와 점수가 같을 때
+                    player.setPlayerState(7);
+                } else { // 승리시
+                    player.setPlayerState(4);
                 }
             }
         }
@@ -186,15 +204,16 @@ public class Room extends Thread {
 
         // 플레이어의 점수를 보고 버스트, 블랙잭 여부를 판단한다.
         if (player.getScore() == 21) {
-            player.setPlayerState(2); // blackjack
+            player.setPlayerState(5); // blackjack
         } else if (player.getScore() > 21) {
-            player.setPlayerState(3); // burst
+            player.setPlayerState(6); // burst
         }
     }
 
     // 플레이어가 한명 이상 준비하지 않을 경우 동작하는 타이머
     // 10초 타이머가 끝난 후 준비된 플레이어가 있을 경우 true 반환
     private boolean beforeReady() throws InterruptedException {
+        boolean timeToStartGame = false;
         Thread.sleep(1000);
         sendTimer(timer++);
         // 타이머가 10에 도달할 때
@@ -204,11 +223,12 @@ public class Room extends Thread {
             while (itr.hasNext()) {
                 Player player = itr.next();
                 if (player.isReady()) {
-                    return true;
+                    player.setPlayerState(2);
+                    timeToStartGame = true;
                 }
             }
         }
-        return false;
+        return timeToStartGame;
     }
 
     // 타이머를 전송하는 메소드
@@ -282,9 +302,9 @@ public class Room extends Thread {
     // send player status to all players
     public void sendStatus(Player player) {
         Iterator<Player> itr = players.iterator();
-        while(itr.hasNext()) {
-            Player otherPlayer  = itr.next();
-            otherPlayer.sendStatus(player.getUsername(),player.getPlayerState());
+        while (itr.hasNext()) {
+            Player otherPlayer = itr.next();
+            otherPlayer.sendStatus(player.getUsername(), player.getPlayerState());
         }
     }
 
@@ -293,18 +313,15 @@ public class Room extends Thread {
         Iterator<Player> itr = players.iterator();
         while (itr.hasNext()) {
             Player player = itr.next();
-            if (player.getPlayerState() == 1) { // 승리
+            if (player.getPlayerState() == 4) { // 승리
                 player.addCoin(player.getBetCoin() * 2);
 //                service.db.setPlayerCoin(player.getUsername(),player.getCoin());
-            } else if (player.getPlayerState() == 2) { // blackjack
+            } else if (player.getPlayerState() == 5 && dealer.getScore() != 21) { // blackjack
                 player.addCoin(player.getBetCoin() * 3);
-            } else if (player.getPlayerState() == 3) { // burst
+            } else if (player.getPlayerState() == 6 && dealer.getScore() <= 21) { // burst
                 player.subCoin(player.getBetCoin());
-            } else { // lose
-                // ready 안한 플레이어는 반영 x
-                if(player.isReady()) {
-                    player.subCoin(player.getBetCoin());
-                }
+            } else if (player.getPlayerState() == 3) { // lose
+                player.subCoin(player.getBetCoin());
             }
         }
     }

@@ -64,7 +64,7 @@ public class Room extends JFrame {
         dealer = new Dealer();
 
 
-        coinField.setText("Coin: " + player.getCoin());
+        setCoinField(player.getCoin());
 
         exit.addActionListener(new ActionListener() {
             @Override
@@ -72,7 +72,7 @@ public class Room extends JFrame {
 //                Lobby lobby = new Lobby(player);
 //                field.reset();
 //                game.requestLeaveRoom();
-                player.resetPlayerParameter();
+//                player.resetPlayerParameter(true);
                 dispose();
                 game.setLobbyVisible(true);
             }
@@ -81,12 +81,8 @@ public class Room extends JFrame {
         bet.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ((e.getModifiers() & InputEvent.BUTTON1_DOWN_MASK) == 0) {
-
-                    game.requestBetCoin("10");
-                } else {
-                    game.requestBetCoin("1");
-                }
+                String coin = JOptionPane.showInputDialog("배팅할 코인을 입력하세요");
+                game.requestBetCoin(coin);
             }
         });
 
@@ -120,7 +116,7 @@ public class Room extends JFrame {
     }
 
     public void addPlayer(Player player) {
-        player.resetPlayerParameter();
+        player.resetPlayerParameter(true);
         if (players.size() < 4) {
             players.add(player);
             // 플레이어에게 인덱스 부과
@@ -172,7 +168,7 @@ public class Room extends JFrame {
         Card card = deck.getTheCard(cardName);
         if (name.equals("Dealer")) {
             dealer.addPlayerCards(card);
-            field.paintCard(card, 0, dealer.getCards().size());
+            field.paintCard(card, 0, dealer.getCards().size() - 1);
             field.paintScore(0, dealer.getScore());
         } else {
             Iterator<Player> itr = players.iterator();
@@ -199,6 +195,23 @@ public class Room extends JFrame {
                 field.setStateLabel(player.getIdx(), action);
                 break;
             }
+        }
+    }
+
+    public void setCoinField(int coin) {
+        coinField.setText("Coin: " + coin);
+    }
+
+    public void resetEnv() {
+        dealer.clear();
+        field.resetEnv();
+        Iterator<Player> itr = players.iterator();
+        while (itr.hasNext()) {
+            Player player = itr.next();
+            player.resetPlayerParameter(false);
+            field.setTitleBorder(player.getIdx(), player.getName());
+            field.setStateLabel(player.getIdx(), "대기");
+            field.setCoinLabel(player.getIdx(), 0);
         }
     }
 }

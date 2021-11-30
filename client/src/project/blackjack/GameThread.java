@@ -101,6 +101,11 @@ public class GameThread extends Thread {
             case "106": // 방 접속 실패
                 JOptionPane.showMessageDialog(null, "게임이 이미 진행 중인 방에 입장할 수 없습니다.");
                 break;
+            case "107": // 코인 갱신
+                player.setCoin(Integer.parseInt(packet.name));
+                lobby.setLabel(player.getName(), player.getCoin());
+                room.setCoinField(player.getCoin());
+                break;
         }
     }
 
@@ -118,11 +123,43 @@ public class GameThread extends Thread {
             case "205": // 플레이어 상태 수신
                 receivePlayerState(packet.name, packet.action);
                 break;
+            case "209": // 방 초기화 패킷 수신
+                room.resetEnv();
+                break;
         }
     }
 
     private void receivePlayerState(String name, String action) {
-        room.setPlayerState(name, action);
+        String state;
+        switch (action) {
+            case "0": // 대기(lose)
+                state = "대기";
+                break;
+            case "1": // 준비
+                state = "준비";
+                break;
+            case "2": // 플레이
+                state = "플레이";
+                break;
+            case "3": // lose
+                state = "패배";
+                break;
+            case "4": // win
+                state = "승리";
+                break;
+            case "5": // blackjack
+                state = "블랙잭";
+                break;
+            case "6": // bust
+                state = "버스트";
+                break;
+            case "7": // draw
+                state = "무승부";
+                break;
+            default:
+                state = action;
+        }
+        room.setPlayerState(name, state);
     }
 
     private void receiveDrawPlayer(String name, String card) {

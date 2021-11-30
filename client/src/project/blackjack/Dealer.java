@@ -32,4 +32,9 @@ public class Dealer{
         }
         score = sum;
     }
+
+    public void clear() {
+        cards.clear();
+        score = 0;
+    }
 }

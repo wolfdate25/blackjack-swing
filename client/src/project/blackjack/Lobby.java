@@ -46,7 +46,6 @@ public class Lobby extends JFrame{
         pack();
         setVisible(true);
 
-
         enterRoom.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

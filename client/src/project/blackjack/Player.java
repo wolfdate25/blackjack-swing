@@ -48,7 +48,10 @@ public class Player {
         return coin;
     }
 
-    public void resetPlayerParameter() {
+    public void resetPlayerParameter(boolean b) {
+        if (b) {
+            idx = -1;
+        }
         playerCards.clear();
         score=0;
     }

@@ -186,7 +186,7 @@ public class Field extends JPanel {
 
     public void setStateLabel(int target, String name) {
         switch (target) {
-            case 1:s
+            case 1:
                 p1StateLabel.setText(name);
                 break;
             case 2:
@@ -240,14 +240,10 @@ public class Field extends JPanel {
         repaint();
     }
 
-    public void reset() {
-        drawnCards.clear();
-    }
-
     private void paintDrawnCards() {
 
-        for (int i = drawnCards.size(); i > 0; i--) {
-            remove(drawnCards.get(i - 1));
+        for (int i = 0; i < drawnCards.size(); i++) {
+            remove(drawnCards.get(i));
         }
 
         for (int i = drawnCards.size(); i > 0; i--) {
@@ -310,6 +306,7 @@ public class Field extends JPanel {
         imageLabel.setLocation(point);
         System.out.println("필드 이미지 생성 좌표 x : " + point.x + " y : " + point.y);
         drawnCards.add(imageLabel);
+        paintDrawnCards();
         repaint();
     }
 
@@ -339,11 +336,25 @@ public class Field extends JPanel {
 //        g.drawRect(490, 140, 125, 500);
 //        g.drawRect(620, 140, 125, 500);
 
-        paintDrawnCards();
+//        paintDrawnCards();
     }
 
     public void setTimer(int timer) {
         this.timer = timer;
+        repaint();
+    }
+
+    public void resetEnv() {
+        dealerScoreLabel.setText("0");
+        p1ScoreLabel.setText("0");
+        p2ScoreLabel.setText("0");
+        p3ScoreLabel.setText("0");
+        p4ScoreLabel.setText("0");
+        // clear all drawn cards
+        for(int i=0;i<drawnCards.size();i++) {
+            remove(drawnCards.get(i));
+        }
+        drawnCards.clear();
         repaint();
     }
 }

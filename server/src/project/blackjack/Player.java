@@ -20,7 +20,7 @@ public class Player extends Thread {
     private int betCoin = 0;
     private Vector<Card> drawnCards;
     private boolean canEnterTheRoom = true;
-    private int state = 0; // 0 = none(lose), 1 = win, 2 = blackjack, 3 = burst
+    private int state = 0; // 0 = stay, 1 = ready, 2 = playing, 3 = lose, 4 = win, 5 = blackjack, 6 = burst, 7 = draw
 
     public Player(Socket client_socket, LobbyService service) {
         this.client_socket = client_socket;
@@ -36,7 +36,6 @@ public class Player extends Thread {
     }
 
     public void initParameters() {
-        coin = 0;
         betCoin = 0;
         drawnCards.clear();
         state = 0;
@@ -138,7 +137,7 @@ public class Player extends Thread {
                 }
                 break;
             case "204": // 드로우 코드
-                if(room.canDraw() && state == 0) {
+                if(room.canDraw() && state == 2) {
                     room.drawCard(this);
                 }
                 break;
@@ -168,10 +167,11 @@ public class Player extends Thread {
         // 게임이 시작중이지 않을 때
         if (!room.isPlaying()) {
             // 베팅할 코인이 가진 코인보다 적으면
-            if (betCoin < this.coin) {
+            if (betCoin+coin <= this.coin) {
                 // 배팅 금액을 늘린다
                 betCoin = betCoin + coin;
                 room.sendBetCoin(this);
+                setPlayerState(1); // 준비 상태로
             } else {
                 // 베팅할 코인이 적을 때
 
@@ -228,6 +228,10 @@ public class Player extends Thread {
 
     public void logout() {
         try {
+            // 코인 저장
+            service.db.setPlayerCoin(getUsername(), getCoin());
+
+            // 연결 끊기
             oos.close();
             ois.close();
             client_socket.close();
@@ -242,14 +246,6 @@ public class Player extends Thread {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    public boolean isReady() {
-        if (betCoin > 0) {
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -320,5 +316,23 @@ public class Player extends Thread {
 
     public void sendStatus(String username, int status) {
         sendPacket("205", username, String.valueOf(status));
+    }
+
+    public boolean isPlaying() {
+        if(state == 2) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isReady() {
+        if(state == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public void sendCoin() {
+        sendPacket("107", String.valueOf(coin), "");
     }
 }
