@@ -1,39 +1,34 @@
 package project.blackjack;
 
 import javax.swing.*;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
 import java.util.Vector;
 
 public class Field extends JPanel {
 
-    private int timer = 0;
-
     Vector<JLabel> drawnCards = new Vector<>(52); // 필드에 올라갈 카드
     Font font = new Font("Arial", Font.PLAIN, 24); // 사용할 폰트
-    private JLabel dealerScoreLabel;
-    private JLabel p1ScoreLabel;
-    private JLabel p2ScoreLabel;
-    private JLabel p3ScoreLabel;
-    private JLabel p4ScoreLabel;
-    private JLabel p1StateLabel;
-    private JLabel p2StateLabel;
-    private JLabel p3StateLabel;
-    private JLabel p4StateLabel;
-    private JLabel p1CoinLabel;
-    private JLabel p2CoinLabel;
-    private JLabel p3CoinLabel;
-    private JLabel p4CoinLabel;
-    private TitledBorder dealerTitleBorder;
-    private TitledBorder p1TitleBorder;
-    private TitledBorder p2TitleBorder;
-    private TitledBorder p3TitleBorder;
-    private TitledBorder p4TitleBorder;
+    private int timer = 0;
+    private final JLabel dealerScoreLabel;
+    private final JLabel p1ScoreLabel;
+    private final JLabel p2ScoreLabel;
+    private final JLabel p3ScoreLabel;
+    private final JLabel p4ScoreLabel;
+    private final JLabel p1StateLabel;
+    private final JLabel p2StateLabel;
+    private final JLabel p3StateLabel;
+    private final JLabel p4StateLabel;
+    private final JLabel p1CoinLabel;
+    private final JLabel p2CoinLabel;
+    private final JLabel p3CoinLabel;
+    private final JLabel p4CoinLabel;
+    private final TitledBorder dealerTitleBorder;
+    private final TitledBorder p1TitleBorder;
+    private final TitledBorder p2TitleBorder;
+    private final TitledBorder p3TitleBorder;
+    private final TitledBorder p4TitleBorder;
 
 
     public Field() {
@@ -118,66 +113,65 @@ public class Field extends JPanel {
         p4ScoreLabel.setFont(font);
         add(p4ScoreLabel);
 
-        JLabel StateLabel = new JLabel("상태",SwingConstants.CENTER);
+        JLabel StateLabel = new JLabel("상태", SwingConstants.CENTER);
         StateLabel.setSize(60, 56);
         StateLabel.setLocation(170, 550);
         StateLabel.setFont(smallFont);
         add(StateLabel);
 
-        p1StateLabel = new JLabel("",SwingConstants.CENTER); // default 대기
+        p1StateLabel = new JLabel("", SwingConstants.CENTER); // default 대기
         p1StateLabel.setSize(125, 56);
         p1StateLabel.setLocation(230, 550);
         p1StateLabel.setFont(font);
         add(p1StateLabel);
 
-        p2StateLabel = new JLabel("",SwingConstants.CENTER);
+        p2StateLabel = new JLabel("", SwingConstants.CENTER);
         p2StateLabel.setSize(125, 56);
         p2StateLabel.setLocation(360, 550);
         p2StateLabel.setFont(font);
         add(p2StateLabel);
 
-        p3StateLabel = new JLabel("",SwingConstants.CENTER);
+        p3StateLabel = new JLabel("", SwingConstants.CENTER);
         p3StateLabel.setSize(125, 56);
         p3StateLabel.setLocation(490, 550);
         p3StateLabel.setFont(font);
         add(p3StateLabel);
 
-        p4StateLabel = new JLabel("",SwingConstants.CENTER);
+        p4StateLabel = new JLabel("", SwingConstants.CENTER);
         p4StateLabel.setSize(125, 56);
         p4StateLabel.setLocation(620, 550);
         p4StateLabel.setFont(font);
         add(p4StateLabel);
 
-        JLabel coinLabel = new JLabel("배팅액",SwingConstants.CENTER);
+        JLabel coinLabel = new JLabel("배팅액", SwingConstants.CENTER);
         coinLabel.setSize(60, 56);
         coinLabel.setLocation(170, 600);
         coinLabel.setFont(smallFont);
         add(coinLabel);
 
-        p1CoinLabel = new JLabel("",SwingConstants.CENTER); // default 0코인
+        p1CoinLabel = new JLabel("", SwingConstants.CENTER); // default 0코인
         p1CoinLabel.setSize(125, 56);
         p1CoinLabel.setLocation(230, 600);
         p1CoinLabel.setFont(font);
         add(p1CoinLabel);
 
-        p2CoinLabel = new JLabel("",SwingConstants.CENTER);
+        p2CoinLabel = new JLabel("", SwingConstants.CENTER);
         p2CoinLabel.setSize(125, 56);
         p2CoinLabel.setLocation(360, 600);
         p2CoinLabel.setFont(font);
         add(p2CoinLabel);
 
-        p3CoinLabel = new JLabel("",SwingConstants.CENTER);
+        p3CoinLabel = new JLabel("", SwingConstants.CENTER);
         p3CoinLabel.setSize(125, 56);
         p3CoinLabel.setLocation(490, 600);
         p3CoinLabel.setFont(font);
         add(p3CoinLabel);
 
-        p4CoinLabel = new JLabel("",SwingConstants.CENTER);
+        p4CoinLabel = new JLabel("", SwingConstants.CENTER);
         p4CoinLabel.setSize(125, 56);
         p4CoinLabel.setLocation(620, 600);
         p4CoinLabel.setFont(font);
         add(p4CoinLabel);
-
 
 
         System.out.println("생성자 실행됨");
@@ -204,7 +198,7 @@ public class Field extends JPanel {
 
     public void setCoinLabel(int target, int coin) {
         String text = coin + "코인";
-        if(coin < 0) {
+        if (coin < 0) {
             text = "";
         }
         switch (target) {
@@ -354,7 +348,7 @@ public class Field extends JPanel {
         p3ScoreLabel.setText("0");
         p4ScoreLabel.setText("0");
         // clear all drawn cards
-        for(int i=0;i<drawnCards.size();i++) {
+        for (int i = 0; i < drawnCards.size(); i++) {
             remove(drawnCards.get(i));
         }
         drawnCards.clear();

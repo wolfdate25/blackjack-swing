@@ -1,13 +1,12 @@
 package project.blackjack;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class Card {
 
-    private ImageIcon image;
-    private int value;
-    private String name;
+    private final ImageIcon image;
+    private final int value;
+    private final String name;
 
     public Card(ImageIcon image, int value, String name) {
         this.image = image;

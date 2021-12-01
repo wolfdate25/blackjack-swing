@@ -3,10 +3,12 @@ package project.blackjack;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 
-public class Lobby extends JFrame{
+public class Lobby extends JFrame {
     public JPanel rootPanel;
+    Player player;
+    DefaultListModel model;
+    GameThread game;
     private JButton refreshRoom;
     private JButton makeRoom;
     private JLabel userLabel;
@@ -15,12 +17,7 @@ public class Lobby extends JFrame{
     private JButton enterRoom;
     private JButton loginButton;
 
-    Player player;
-    DefaultListModel model;
-
-    GameThread game;
-
-    public Lobby( GameThread game) {
+    public Lobby(GameThread game) {
         setTitle("Lobby");
         setContentPane(rootPanel);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -34,7 +31,7 @@ public class Lobby extends JFrame{
 //        roomList = new JList(new DefaultListModel());
 
 
-        if(player == null) {
+        if (player == null) {
             userLabel.setText("먼저 로그인을 하세요");
         } else {
             userLabel.setText("username: " + player.getName());
@@ -49,7 +46,7 @@ public class Lobby extends JFrame{
         enterRoom.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Room room = (Room)roomList.getSelectedValue();
+                Room room = (Room) roomList.getSelectedValue();
                 if (room == null) {
                     JOptionPane.showMessageDialog(null, "먼저 입장할 방을 선택해야합니다.");
                     return;
@@ -73,8 +70,8 @@ public class Lobby extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 String roomName = JOptionPane.showInputDialog("생성할 방 이름을 입력하세요");
 
-                if(roomName != null) {
-                    if(roomName.equals("")) {
+                if (roomName != null) {
+                    if (roomName.equals("")) {
                         JOptionPane.showMessageDialog(null, "생성할 방 이름을 한 글자 이상 입력해야합니다.");
                         return;
                     }
@@ -92,7 +89,7 @@ public class Lobby extends JFrame{
     }
 
     public void addRoom(String roomName, int players) {
-        model.addElement(new Room(roomName,players));
+        model.addElement(new Room(roomName, players));
     }
 
     public void setLabel(String name, int coin) {
@@ -101,16 +98,17 @@ public class Lobby extends JFrame{
     }
 
     class Room {
-        private String name;
-        private int players;
-        public  Room(String name, int players) {
+        private final String name;
+        private final int players;
+
+        public Room(String name, int players) {
             this.name = name;
             this.players = players;
         }
 
         @Override
         public String toString() {
-            return name + " [" + players +"/4]";
+            return name + " [" + players + "/4]";
         }
     }
 }

@@ -4,10 +4,10 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class Player {
-    private String name;
+    private final String name;
     private int score;
     private int coin;
-    private Vector<Card> playerCards;
+    private final Vector<Card> playerCards;
 
     private int idx = -1;
 
@@ -18,11 +18,12 @@ public class Player {
         playerCards = new Vector<>(10);
     }
 
-    public void setIdx(int n) {
-        this.idx = n;
-    }
     public int getIdx() {
         return this.idx;
+    }
+
+    public void setIdx(int n) {
+        this.idx = n;
     }
 
     public String getName() {
@@ -41,11 +42,13 @@ public class Player {
         this.playerCards.add(card);
         updateScore();
     }
-    public void setCoin(int value) {
-        this.coin  = value;
-    }
+
     public int getCoin() {
         return coin;
+    }
+
+    public void setCoin(int value) {
+        this.coin = value;
     }
 
     public void resetPlayerParameter(boolean b) {
@@ -53,14 +56,14 @@ public class Player {
             idx = -1;
         }
         playerCards.clear();
-        score=0;
+        score = 0;
     }
 
     public void updateScore() {
         Iterator<Card> itr = playerCards.iterator();
         int sum = 0;
-        while(itr.hasNext()) {
-            sum =score+itr.next().getValue();
+        while (itr.hasNext()) {
+            sum = score + itr.next().getValue();
         }
         score = sum;
     }

@@ -3,9 +3,9 @@ package project.blackjack;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class Dealer{
-    private Vector<Card> cards;
+public class Dealer {
     int score = 0;
+    private final Vector<Card> cards;
 
     public Dealer() {
         cards = new Vector<>(10);
@@ -27,8 +27,8 @@ public class Dealer{
     public void updateScore() {
         Iterator<Card> itr = cards.iterator();
         int sum = 0;
-        while(itr.hasNext()) {
-            sum =sum+itr.next().getValue();
+        while (itr.hasNext()) {
+            sum = sum + itr.next().getValue();
         }
         score = sum;
     }

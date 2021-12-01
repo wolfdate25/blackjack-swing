@@ -3,12 +3,16 @@ package project.blackjack;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.Vector;
 
 public class Room extends JFrame {
+    Deck deck;
+    Vector<Player> players = new Vector(4);
+    String roomName;
+    GameThread game;
+    Dealer dealer;
     private JPanel rootPanel;
     private JButton sendMessage;
     private JButton bet;
@@ -24,20 +28,6 @@ public class Room extends JFrame {
     private Field field;
     private JButton doubleDownButton;
     private JButton surrenderButton;
-
-    Deck deck;
-    Vector<Player> players = new Vector(4);
-
-    String roomName;
-    GameThread game;
-    Dealer dealer;
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        game.requestLeaveRoom();
-        game.setLobbyVisible(true);
-    }
 
     public Room(GameThread thread, String roomName, Player player) {
         setTitle("Blackjack");
@@ -89,7 +79,7 @@ public class Room extends JFrame {
 //                game.requestLeaveRoom();
 //                player.resetPlayerParameter(true);
                 dispose();
-                game.setLobbyVisible(true);
+                GameThread.setLobbyVisible(true);
             }
         });
 
@@ -98,7 +88,7 @@ public class Room extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String coin = JOptionPane.showInputDialog("배팅할 코인을 입력하세요");
                 if (coin != null) {
-                game.requestBetCoin(coin);
+                    game.requestBetCoin(coin);
                 }
             }
         });
@@ -131,6 +121,13 @@ public class Room extends JFrame {
                 field.paintScore(1, player.getScore());*/
             }
         });
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        game.requestLeaveRoom();
+        GameThread.setLobbyVisible(true);
     }
 
     private void sendMessage() {

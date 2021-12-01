@@ -8,16 +8,13 @@ import java.net.Socket;
 
 public class GameThread extends Thread {
     private static final long serialVersionUID = 1L;
-    Socket socket;
-    Player player = null;
-
-    private ObjectOutputStream oos;
-    private ObjectInputStream ois;
-
     private static Lobby lobby;
     private static Room room;
-
-    private Packet packet;
+    Socket socket;
+    Player player = null;
+    private final ObjectOutputStream oos;
+    private final ObjectInputStream ois;
+    private final Packet packet;
 
     public GameThread(String address, int port) throws IOException {
 //        try {
@@ -39,6 +36,10 @@ public class GameThread extends Thread {
 //        }
 
         requestRoomList();
+    }
+
+    public static void setLobbyVisible(boolean set) {
+        lobby.setVisible(set);
     }
 
     protected void login(String name, String password) {
@@ -66,10 +67,6 @@ public class GameThread extends Thread {
                 gameAction(packet);
             }
         }
-    }
-
-    public static void setLobbyVisible(boolean set) {
-        lobby.setVisible(set);
     }
 
     private void lobbyAction(Packet packet) {
@@ -106,7 +103,7 @@ public class GameThread extends Thread {
                     player.setCoin(Integer.parseInt(packet.name));
                     lobby.setLabel(player.getName(), player.getCoin());
                     room.setCoinField(player.getCoin());
-                } catch(NullPointerException e) {
+                } catch (NullPointerException e) {
 
                 }
                 break;

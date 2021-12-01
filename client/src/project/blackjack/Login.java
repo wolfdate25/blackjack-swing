@@ -1,17 +1,15 @@
 package project.blackjack;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 
 public class Login extends JDialog {
+    GameThread game;
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
     private JPasswordField passwordField;
     private JTextField nameField;
-
-    GameThread game;
 
     public Login(GameThread game) {
         setTitle("Login");
