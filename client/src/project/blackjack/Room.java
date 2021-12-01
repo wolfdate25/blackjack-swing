@@ -97,7 +97,9 @@ public class Room extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String coin = JOptionPane.showInputDialog("배팅할 코인을 입력하세요");
+                if (coin != null) {
                 game.requestBetCoin(coin);
+                }
             }
         });
 
@@ -153,6 +155,7 @@ public class Room extends JFrame {
             // 플레이어 초기 라벨 설정
             field.setStateLabel(idx, "대기");
             field.setCoinLabel(idx, 0);
+            chatArea.append("[" + player.getName() + "]님이 입장하셨습니다.\n");
         }
 
     }
@@ -165,6 +168,9 @@ public class Room extends JFrame {
             if (player.getName().equals(name)) {
                 players.remove(player);
                 field.setTitleBorder(player.getIdx(), "Empty");
+                field.setStateLabel(player.getIdx(), "");
+                field.setCoinLabel(player.getIdx(), -1);
+                chatArea.append("[" + player.getName() + "]님이 퇴장하셨습니다.\n");
                 break;
             }
         }

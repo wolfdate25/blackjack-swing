@@ -204,6 +204,9 @@ public class Field extends JPanel {
 
     public void setCoinLabel(int target, int coin) {
         String text = coin + "코인";
+        if(coin < 0) {
+            text = "";
+        }
         switch (target) {
             case 1:
                 p1CoinLabel.setText(text);

@@ -19,7 +19,6 @@ public class Player extends Thread {
     private int coin = 0;
     private int betCoin = 0;
     private Vector<Card> drawnCards;
-    private boolean canEnterTheRoom = true;
     private int state = 0; // 0 = stay, 1 = ready, 2 = playing, 3 = lose, 4 = win, 5 = blackjack, 6 = burst, 7 = draw
 
     public Player(Socket client_socket, LobbyService service) {
@@ -103,18 +102,25 @@ public class Player extends Thread {
                 service.frame.appendText("방입장 요청 동작 실행");
                 String name = packet.name;
                 if (!name.equals("") && room == null) { // 패킷 오작동 & 중복 입장 검사
-                    if (canEnterTheRoom) {
-                        if (service.enterRoom(name, this)) {
-                            // 방에 입장하였을 때 플레이어에게 전송할 패킷
-                            sendPacket("105", room.getRoomName(), "");
-                        } else {
-                            // 방에 입장하지 못하였을 때 플레이어에게 전송할 패킷(106)
-                            sendPacket("106", "reject", "");
-                        }
+                    if (service.enterRoom(name, this)) {
+                        // 방에 입장하였을 때 플레이어에게 전송할 패킷
+                        sendPacket("105", room.getRoomName(), "");
                     } else {
-                        // 이미 입장중인 방이 있을 때 플레이어에게 전송할 패킷(106)
-                        sendPacket("106", "already", "");
+                        // 방에 입장하지 못하였을 때 플레이어에게 전송할 패킷(106)
+                        sendPacket("106", "reject", "");
                     }
+                } else if (room.getRoomName().equals(name)) {
+                    if(room.recoverPlayer(this)) {
+                        sendPacket("105", room.getRoomName(), "");
+
+                    } else {
+                        // 복구 실패 시
+                        sendPacket("106", "reject", "");
+                    }
+                }
+                else {
+                    // 이미 입장중인 방이 있을 때 플레이어에게 전송할 패킷(106)
+                    sendPacket("106", "already", "");
                 }
                 break;
             case "201": // 방의 초기 환경 요청 코드
@@ -127,7 +133,7 @@ public class Player extends Thread {
             case "202": // 방 퇴장 요청 코드
                 // service.leaveRoom(roomcode, player);
                 room.removePlayer(this);
-                room = null;
+//                room = null;
                 break;
             case "203": // 배팅 코드
                 try {
@@ -137,12 +143,12 @@ public class Player extends Thread {
                 }
                 break;
             case "204": // 드로우 코드
-                if(room.canDraw() && state == 2) {
+                if (room.canDraw() && state == 2) {
                     room.drawCard(this);
                 }
                 break;
             case "210": // 채팅 코드
-                room.sendPlayerChat(this,packet.name);
+                room.sendPlayerChat(this, packet.name);
         }
     }
 
@@ -169,7 +175,7 @@ public class Player extends Thread {
         // 게임이 시작중이지 않을 때
         if (!room.isPlaying()) {
             // 베팅할 코인이 가진 코인보다 적으면
-            if (betCoin+coin <= this.coin) {
+            if (betCoin + coin <= this.coin) {
                 // 배팅 금액을 늘린다
                 betCoin = betCoin + coin;
                 room.sendBetCoin(this);
@@ -195,7 +201,7 @@ public class Player extends Thread {
             oos.writeObject(packet);
         } catch (IOException e) {
             logout();
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -241,13 +247,13 @@ public class Player extends Thread {
             service.frame.appendText(username + "님이 로그아웃하였습니다.");
             service.refreshPlayerCount();
 
-            if (room != null) {
-                room.removePlayer(this);
-                room = null;
-            }
+//            if (room != null) {
+//                room.removePlayer(this);
+//                room = null;
+//            }
 
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -284,14 +290,6 @@ public class Player extends Thread {
 
     }
 
-    public boolean canEnterTheRoom() {
-        return canEnterTheRoom;
-    }
-
-    public boolean setCanEnterTheRoom(boolean canEnterTheRoom) {
-        return this.canEnterTheRoom = canEnterTheRoom;
-    }
-
     public void sendEnvReset() {
         sendPacket("209", "", "");
     }
@@ -312,6 +310,7 @@ public class Player extends Thread {
     public int addCoin(int coin) {
         return this.coin += coin;
     }
+
     public int subCoin(int coin) {
         return this.coin -= coin;
     }
@@ -321,14 +320,14 @@ public class Player extends Thread {
     }
 
     public boolean isPlaying() {
-        if(state == 2) {
+        if (state == 2) {
             return true;
         }
         return false;
     }
 
     public boolean isReady() {
-        if(state == 1) {
+        if (state == 1) {
             return true;
         }
         return false;
@@ -339,6 +338,10 @@ public class Player extends Thread {
     }
 
     public void sendChat(String username, String chat) {
-        sendPacket("210",username,chat);
+        sendPacket("210", username, chat);
+    }
+
+    public void resetRoom() {
+        room = null;
     }
 }

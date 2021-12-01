@@ -102,9 +102,13 @@ public class GameThread extends Thread {
                 JOptionPane.showMessageDialog(null, "게임이 이미 진행 중인 방에 입장할 수 없습니다.");
                 break;
             case "107": // 코인 갱신
-                player.setCoin(Integer.parseInt(packet.name));
-                lobby.setLabel(player.getName(), player.getCoin());
-                room.setCoinField(player.getCoin());
+                try {
+                    player.setCoin(Integer.parseInt(packet.name));
+                    lobby.setLabel(player.getName(), player.getCoin());
+                    room.setCoinField(player.getCoin());
+                } catch(NullPointerException e) {
+
+                }
                 break;
         }
     }

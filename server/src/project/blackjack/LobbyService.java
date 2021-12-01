@@ -67,6 +67,7 @@ public class LobbyService {
         while (itr.hasNext()) {
             Room room = itr.next();
             if (room.getRoomName().equals(roomCode)) {
+
                 // 방의 게임이 진행중인 경우
                 if (room.isPlaying()) {
                     return false;

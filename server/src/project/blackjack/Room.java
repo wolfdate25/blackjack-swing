@@ -33,7 +33,6 @@ public class Room extends Thread {
         player.initParameters();
         if (players.size() < 4) {
             player.setRoom(this);
-            player.setCanEnterTheRoom(false);
             // 모든 플레이어에게 새로운 플레이어를 추가
             Iterator<Player> itr = players.iterator();
             while (itr.hasNext()) {
@@ -60,7 +59,7 @@ public class Room extends Thread {
             beRemovePlayers.add(player);
         } else {
             players.remove(player);
-            player.setCanEnterTheRoom(true);
+            player.resetRoom();
             if (players.size() == 0) {
 //            service.removeRoom(this);
 //            System.out.println("방이 닫힙니다.");
@@ -340,5 +339,14 @@ public class Room extends Thread {
             Player otherPlayer = itr.next();
             otherPlayer.sendChat(player.getUsername(), chat);
         }
+    }
+
+    public boolean recoverPlayer(Player player) {
+        // 복구 조건
+        if(players.contains(player) && beRemovePlayers.contains(player)) {
+            beRemovePlayers.remove(player);
+            return true;
+        }
+        return false;
     }
 }
