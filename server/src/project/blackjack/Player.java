@@ -145,10 +145,12 @@ public class Player extends Thread {
                 }
                 break;
             case "204": // 드로우 코드
-                if (canDraw && room.canDraw() && state == 2 || state == 9) {
-                    room.drawCard(this);
-                    if (doubleDown) {
-                        canDraw = false;
+                if (canDraw && room.canDraw()) {
+                    if(state == 2 || state == 9) {
+                        room.drawCard(this);
+                        if (doubleDown) {
+                            canDraw = false;
+                        }
                     }
                 }
                 break;
@@ -366,5 +368,8 @@ public class Player extends Thread {
 
     public void setDoubleDown() {
         doubleDown = true;
+    }
+    public boolean isDoubledown() {
+        return doubleDown;
     }
 }

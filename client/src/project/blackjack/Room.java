@@ -236,7 +236,7 @@ public class Room extends JFrame {
             Player player = itr.next();
             if (player.getName().equals(name)) {
                 if (state.equals("더블다운")) {
-                    field.setCoinLabel(player.getIdx(), player.getCoin());
+                    field.setCoinLabelX2(player.getIdx());
                 } else {
                     field.setStateLabel(player.getIdx(), state);
                 }

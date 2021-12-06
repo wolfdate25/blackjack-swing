@@ -218,30 +218,6 @@ public class Field extends JPanel {
         repaint();
     }
 
-    public void setCoinLabel(int target, int coin, boolean dd) {
-        String text = "";
-        if (dd) {
-            text = coin + "X2코인";
-        } else if (coin > 0) {
-            text = coin + "코인";
-        }
-        switch (target) {
-            case 1:
-                p1CoinLabel.setText(text);
-                break;
-            case 2:
-                p2CoinLabel.setText(text);
-                break;
-            case 3:
-                p3CoinLabel.setText(text);
-                break;
-            case 4:
-                p4CoinLabel.setText(text);
-                break;
-        }
-        repaint();
-    }
-
 
     public void setTitleBorder(int target, String name) {
         switch (target) {
@@ -378,4 +354,28 @@ public class Field extends JPanel {
         drawnCards.clear();
         repaint();
     }
+
+    public void setCoinLabelX2(int idx) {
+        String text;
+        switch (idx) {
+            case 1:
+                text = p1CoinLabel.getText();
+                p1CoinLabel.setText(text + "x2");
+                break;
+            case 2:
+                text = p2CoinLabel.getText();
+                p2CoinLabel.setText(text + "x2");
+                break;
+            case 3:
+                text = p3CoinLabel.getText();
+                p3CoinLabel.setText(text + "x2");
+                break;
+            case 4:
+                text = p4CoinLabel.getText();
+                p4CoinLabel.setText(text + "x2");
+                break;
+        }
+        repaint();
+    }
+
 }

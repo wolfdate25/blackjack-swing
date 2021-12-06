@@ -313,15 +313,23 @@ public class Room extends Thread {
         while (itr.hasNext()) {
             Player player = itr.next();
             if (player.getPlayerState() == 4) { // 승리
-                player.addCoin(player.getBetCoin() * 2);
+                if(player.isDoubledown()) {
+                    player.addCoin(player.getBetCoin() * 4);
+                } else {
+                    player.addCoin((player.getBetCoin() * 2));
+                }
 //                service.db.setPlayerCoin(player.getUsername(),player.getCoin());
             } else if (player.getPlayerState() == 5 && dealer.getScore() != 21) { // blackjack
-                player.addCoin((int) (player.getBetCoin() * 1.5));
+                if(player.isDoubledown()) {
+                    player.addCoin(player.getBetCoin() * 3);
+                } else {
+                    player.addCoin((int) (player.getBetCoin() * 1.5));
+                }
             } else if (player.getPlayerState() == 6 && dealer.getScore() <= 21) { // burst
                 player.subCoin(player.getBetCoin());
             } else if (player.getPlayerState() == 3) { // lose
                 player.subCoin(player.getBetCoin());
-            } else if (player.getPlayerState() == 7 && dealer.getScore() != 21) {
+            } else if (player.getPlayerState() == 8 && dealer.getScore() != 21) { // surrender
                 player.subCoin(player.getBetCoin()/2);
             }
         }

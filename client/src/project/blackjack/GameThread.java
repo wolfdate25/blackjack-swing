@@ -279,7 +279,7 @@ public class GameThread extends Thread {
     }
 
     public void requestDoubleDown() {
-        Packet packet = new Packet("206", "", "");
+        Packet packet = new Packet("207", "", "");
         try {
             oos.writeObject(packet);
         } catch (IOException e) {
@@ -288,7 +288,7 @@ public class GameThread extends Thread {
     }
 
     public void requestSurrender() {
-        Packet packet = new Packet("207", "", "");
+        Packet packet = new Packet("206", "", "");
         try {
             oos.writeObject(packet);
         } catch (IOException e) {
