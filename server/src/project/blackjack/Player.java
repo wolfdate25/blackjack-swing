@@ -146,7 +146,7 @@ public class Player extends Thread {
                 break;
             case "204": // 드로우 코드
                 if (canDraw && room.canDraw()) {
-                    if(state == 2 || state == 9) {
+                    if (state == 2 || state == 9) {
                         room.drawCard(this);
                         if (doubleDown) {
                             canDraw = false;
@@ -161,7 +161,11 @@ public class Player extends Thread {
                 break;
             case "207": // 더블다운 코드
                 if (room.canDraw() && state == 2) {
-                    room.doubleDown(this);
+                    if (this.drawnCards.size() < 3) {
+                        room.doubleDown(this);
+                    } else { // 이미 직접 드로우 한 카드가 있을 때
+
+                    }
                 }
                 break;
             case "210": // 채팅 코드
@@ -253,9 +257,9 @@ public class Player extends Thread {
 
     public void logout() {
         try {
-            if (client_socket.isClosed()) {
-                return;
-            }
+//            if (client_socket.isClosed()) {
+//                return;
+//            }
 
             // 코인 저장
             service.db.setPlayerCoin(getUsername(), getCoin());
@@ -369,6 +373,7 @@ public class Player extends Thread {
     public void setDoubleDown() {
         doubleDown = true;
     }
+
     public boolean isDoubledown() {
         return doubleDown;
     }
