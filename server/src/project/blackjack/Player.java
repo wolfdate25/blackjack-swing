@@ -19,7 +19,9 @@ public class Player extends Thread {
     private int coin = 0;
     private int betCoin = 0;
     private Vector<Card> drawnCards;
-    private int state = 0; // 0 = stay, 1 = ready, 2 = playing, 3 = lose, 4 = win, 5 = blackjack, 6 = burst, 7 = draw
+    private int state = 0; // 0 = stay, 1 = ready, 2 = playing, 3 = lose, 4 = win, 5 = blackjack, 6 = burst, 7 = draw, 8 = surrender, 9 = doubledown
+    private boolean canDraw = true;
+    private boolean doubleDown = false;
 
     public Player(Socket client_socket, LobbyService service) {
         this.client_socket = client_socket;
@@ -38,6 +40,7 @@ public class Player extends Thread {
         betCoin = 0;
         drawnCards.clear();
         state = 0;
+        doubleDown = false;
     }
 
     public void run() {
@@ -110,15 +113,14 @@ public class Player extends Thread {
                         sendPacket("106", "reject", "");
                     }
                 } else if (room.getRoomName().equals(name)) {
-                    if(room.recoverPlayer(this)) {
+                    if (room.recoverPlayer(this)) {
                         sendPacket("105", room.getRoomName(), "");
 
                     } else {
                         // 복구 실패 시
                         sendPacket("106", "reject", "");
                     }
-                }
-                else {
+                } else {
                     // 이미 입장중인 방이 있을 때 플레이어에게 전송할 패킷(106)
                     sendPacket("106", "already", "");
                 }
@@ -143,8 +145,21 @@ public class Player extends Thread {
                 }
                 break;
             case "204": // 드로우 코드
-                if (room.canDraw() && state == 2) {
+                if (canDraw && room.canDraw() && state == 2 || state == 9) {
                     room.drawCard(this);
+                    if (doubleDown) {
+                        canDraw = false;
+                    }
+                }
+                break;
+            case "206": // 서렌더 코드
+                if (room.canDraw() && state == 2) {
+                    room.surrender(this);
+                }
+                break;
+            case "207": // 더블다운 코드
+                if (room.canDraw() && state == 2) {
+                    room.doubleDown(this);
                 }
                 break;
             case "210": // 채팅 코드
@@ -236,6 +251,10 @@ public class Player extends Thread {
 
     public void logout() {
         try {
+            if (client_socket.isClosed()) {
+                return;
+            }
+
             // 코인 저장
             service.db.setPlayerCoin(getUsername(), getCoin());
 
@@ -343,5 +362,9 @@ public class Player extends Thread {
 
     public void resetRoom() {
         room = null;
+    }
+
+    public void setDoubleDown() {
+        doubleDown = true;
     }
 }

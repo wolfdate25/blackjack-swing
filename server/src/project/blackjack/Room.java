@@ -180,7 +180,7 @@ public class Room extends Thread {
             if (player.getPlayerState() == 2) { // 플레이중인 플레이어만
                 // 딜러가 버스트일 때
                 if (dealer.getScore() > 21) {
-                        player.setPlayerState(4);
+                    player.setPlayerState(4);
                 } else if (dealer.getScore() == 21) { // 딜러가 블랙잭일 때
                     player.setPlayerState(3);
                 } else if (dealer.getScore() > player.getScore()) { // 딜러가 점수가 많을 때
@@ -316,11 +316,13 @@ public class Room extends Thread {
                 player.addCoin(player.getBetCoin() * 2);
 //                service.db.setPlayerCoin(player.getUsername(),player.getCoin());
             } else if (player.getPlayerState() == 5 && dealer.getScore() != 21) { // blackjack
-                player.addCoin(player.getBetCoin() * 3);
+                player.addCoin((int) (player.getBetCoin() * 1.5));
             } else if (player.getPlayerState() == 6 && dealer.getScore() <= 21) { // burst
                 player.subCoin(player.getBetCoin());
             } else if (player.getPlayerState() == 3) { // lose
                 player.subCoin(player.getBetCoin());
+            } else if (player.getPlayerState() == 7 && dealer.getScore() != 21) {
+                player.subCoin(player.getBetCoin()/2);
             }
         }
     }
@@ -343,10 +345,19 @@ public class Room extends Thread {
 
     public boolean recoverPlayer(Player player) {
         // 복구 조건
-        if(players.contains(player) && beRemovePlayers.contains(player)) {
+        if (players.contains(player) && beRemovePlayers.contains(player)) {
             beRemovePlayers.remove(player);
             return true;
         }
         return false;
+    }
+
+    public void surrender(Player player) {
+        player.setPlayerState(8);
+    }
+
+    public void doubleDown(Player player) {
+        player.setDoubleDown();
+        player.setPlayerState(9);
     }
 }

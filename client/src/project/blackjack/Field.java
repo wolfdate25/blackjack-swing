@@ -197,9 +197,33 @@ public class Field extends JPanel {
     }
 
     public void setCoinLabel(int target, int coin) {
-        String text = coin + "코인";
-        if (coin < 0) {
-            text = "";
+        String text = "";
+        if (coin > 0) {
+            text = coin + "코인";
+        }
+        switch (target) {
+            case 1:
+                p1CoinLabel.setText(text);
+                break;
+            case 2:
+                p2CoinLabel.setText(text);
+                break;
+            case 3:
+                p3CoinLabel.setText(text);
+                break;
+            case 4:
+                p4CoinLabel.setText(text);
+                break;
+        }
+        repaint();
+    }
+
+    public void setCoinLabel(int target, int coin, boolean dd) {
+        String text = "";
+        if (dd) {
+            text = coin + "X2코인";
+        } else if (coin > 0) {
+            text = coin + "코인";
         }
         switch (target) {
             case 1:

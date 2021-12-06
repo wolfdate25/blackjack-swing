@@ -159,6 +159,12 @@ public class GameThread extends Thread {
             case "7": // draw
                 state = "무승부";
                 break;
+            case "8": // surrender
+                state = "포기";
+                break;
+            case "9": // doubledown
+                state = "더블다운";
+                break;
             default:
                 state = action;
         }
@@ -265,6 +271,24 @@ public class GameThread extends Thread {
 
     public void requestChat(String text) {
         Packet packet = new Packet("210", text, "");
+        try {
+            oos.writeObject(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void requestDoubleDown() {
+        Packet packet = new Packet("206", "", "");
+        try {
+            oos.writeObject(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void requestSurrender() {
+        Packet packet = new Packet("207", "", "");
         try {
             oos.writeObject(packet);
         } catch (IOException e) {
