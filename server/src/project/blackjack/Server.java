@@ -19,6 +19,7 @@ public class Server extends JFrame {
     public Server() {
         setContentPane(rootPanel);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setTitle("Server Logger");
         pack();
         setVisible(true);
 

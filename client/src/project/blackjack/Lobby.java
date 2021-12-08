@@ -26,7 +26,7 @@ public class Lobby extends JFrame {
         this.game = game;
 
         // setup Player
-        this.player = player;
+//        this.player = player;
 
         // setup room list
 //        roomList = new JList(new DefaultListModel());

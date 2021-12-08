@@ -56,7 +56,9 @@ public class Room extends Thread {
         // 게임이 진행중이면 나중에 제거함
         if (isPlaying) {
             // 제거 목록에 추가
-            beRemovePlayers.add(player);
+            if (!beRemovePlayers.contains(player)) {
+                beRemovePlayers.add(player);
+            }
         } else {
             players.remove(player);
             player.resetRoom();
@@ -143,10 +145,10 @@ public class Room extends Thread {
             dealer.drawCard();
             itr = players.iterator();
             while (itr.hasNext()) {
-                Thread.sleep(1000);
 
                 Player player = itr.next();
                 if (player.isPlaying()) {
+                    Thread.sleep(1000);
                     drawCard(player);
                 }
             }
@@ -313,14 +315,14 @@ public class Room extends Thread {
         while (itr.hasNext()) {
             Player player = itr.next();
             if (player.getPlayerState() == 4) { // 승리
-                if(player.isDoubledown()) {
+                if (player.isDoubledown()) {
                     player.addCoin(player.getBetCoin() * 4);
                 } else {
                     player.addCoin((player.getBetCoin() * 2));
                 }
 //                service.db.setPlayerCoin(player.getUsername(),player.getCoin());
             } else if (player.getPlayerState() == 5 && dealer.getScore() != 21) { // blackjack
-                if(player.isDoubledown()) {
+                if (player.isDoubledown()) {
                     player.addCoin(player.getBetCoin() * 3);
                 } else {
                     player.addCoin((int) (player.getBetCoin() * 1.5));
@@ -330,7 +332,7 @@ public class Room extends Thread {
             } else if (player.getPlayerState() == 3) { // lose
                 player.subCoin(player.getBetCoin());
             } else if (player.getPlayerState() == 8 && dealer.getScore() != 21) { // surrender
-                player.subCoin(player.getBetCoin()/2);
+                player.subCoin(player.getBetCoin() / 2);
             }
         }
     }

@@ -264,6 +264,11 @@ public class Player extends Thread {
             // 코인 저장
             service.db.setPlayerCoin(getUsername(), getCoin());
 
+            // 방 나가기 요청
+            if (room != null) {
+                room.removePlayer(this);
+            }
+
             // 연결 끊기
             oos.close();
             ois.close();
@@ -322,6 +327,9 @@ public class Player extends Thread {
     public void setPlayerState(int state) {
         this.state = state;
         room.sendStatus(this);
+        if(state == 9) { // 더블다운
+            this.state = 2; // 여전히 플레이
+        }
     }
 
     public int getPlayerState() {
