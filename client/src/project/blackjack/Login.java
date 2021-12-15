@@ -1,7 +1,6 @@
 package project.blackjack;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 
 public class Login extends JDialog {

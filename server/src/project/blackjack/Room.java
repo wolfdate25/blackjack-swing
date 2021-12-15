@@ -4,18 +4,16 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class Room extends Thread {
-    private Vector<Player> players;
-    private Vector<Player> beRemovePlayers;
-    private LobbyService service;
-    private String roomName;
+    Deck deck;
+    Dealer dealer;
+    private final Vector<Player> players;
+    private final Vector<Player> beRemovePlayers;
+    private final LobbyService service;
+    private final String roomName;
     private int timer = 0;
-
     private boolean keepRunning = true;
     private boolean isPlaying = false;
     private boolean canDraw = false;
-
-    Deck deck;
-    Dealer dealer;
 
 
     public Room(String roomName, LobbyService lobbyService, Player player) {
@@ -105,6 +103,9 @@ public class Room extends Thread {
                     for (Player player : players) {
                         player.initParameters();
                     }
+
+                    // 덱을 섞는다
+                    deck.genNewDeck();
                     // 미뤄둔 플레이어를 제거한다.
                     for (Player player : beRemovePlayers) {
                         removePlayer(player);
@@ -262,42 +263,23 @@ public class Room extends Thread {
         }
     }
 
-    // 기존 플레이어의 이름을 새로운 플레이어에게 전송하는 메소드
-    public void sendOldPlayers(Player player) {
+    // 현재 기준 모든 환경 정보를 전송
+    public void sendAllEnvs(Player player) {
         Iterator<Player> itr = players.iterator();
-        Player otherPlayer;
         while (itr.hasNext()) {
-            otherPlayer = itr.next();
-            if (!otherPlayer.getUsername().equals(player.getUsername())) {
-                player.sendNewPlayer(otherPlayer.getUsername());
-
+            Player itrPlayer = itr.next();
+            if (player != itrPlayer) { // 플레이어 중복 추가 방지
+                player.sendNewPlayer(itrPlayer.getUsername());
+            }
+            player.sendStatus(itrPlayer.getUsername(), itrPlayer.getPlayerState());
+            player.sendBetCoin(itrPlayer.getUsername(), itrPlayer.getBetCoin());
+            for (Card card : itrPlayer.getDrawnCards()) {
+                player.sendCard(itrPlayer.getUsername(), card.getName());
             }
         }
-    }
-
-    // 기존에 드로우된 카드들을 새로운 플레이어에게 전송하는 메소드
-    public void sendDrawnCards(Player player) {
-        // 딜러의 카드 전송
-        for (Card dealerCard : dealer.getDrawnCards()) {
-            player.sendCard("dealer", dealerCard.getName());
+        for (Card card : dealer.getDrawnCards()) {
+            player.sendCard("Dealer", card.getName());
         }
-
-        // 플레이어들의 카드 전송
-        Iterator<Player> itr = players.iterator();
-        Player otherPlayer;
-        while (itr.hasNext()) {
-            otherPlayer = itr.next();
-            // 자신은 제외
-            if (!otherPlayer.getUsername().equals(player.getUsername())) {
-                Vector<Card> cards = otherPlayer.getDrawnCards();
-                Iterator<Card> cardItr = cards.iterator();
-                while (cardItr.hasNext()) {
-                    Card card = cardItr.next();
-                    player.sendCard(otherPlayer.getUsername(), card.getName());
-                }
-            }
-        }
-
     }
 
     // send player status to all players

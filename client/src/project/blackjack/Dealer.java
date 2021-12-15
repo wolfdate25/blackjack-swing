@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class Dealer {
-    int score = 0;
     private final Vector<Card> cards;
+    int score = 0;
 
     public Dealer() {
         cards = new Vector<>(10);

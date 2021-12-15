@@ -10,11 +10,11 @@ public class GameThread extends Thread {
     private static final long serialVersionUID = 1L;
     private static Lobby lobby;
     private static Room room;
-    Socket socket;
-    Player player = null;
     private final ObjectOutputStream oos;
     private final ObjectInputStream ois;
     private final Packet packet;
+    Socket socket;
+    Player player = null;
 
     public GameThread(String address, int port) throws IOException {
 //        try {

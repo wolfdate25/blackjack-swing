@@ -5,10 +5,9 @@ import java.util.Vector;
 
 public class Player {
     private final String name;
+    private final Vector<Card> playerCards;
     private int score;
     private int coin;
-    private final Vector<Card> playerCards;
-
     private int idx = -1;
 
     public Player(String name) {

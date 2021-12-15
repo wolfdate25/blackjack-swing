@@ -8,17 +8,17 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class Player extends Thread {
-    private Socket client_socket;
+    private final Socket client_socket;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    private LobbyService service;
+    private final LobbyService service;
     private Room room;
 
     // parameters
     private String username;
     private int coin = 0;
     private int betCoin = 0;
-    private Vector<Card> drawnCards;
+    private final Vector<Card> drawnCards;
     private int state = 0; // 0 = stay, 1 = ready, 2 = playing, 3 = lose, 4 = win, 5 = blackjack, 6 = burst, 7 = draw, 8 = surrender, 9 = doubledown
     private boolean canDraw = true;
     private boolean doubleDown = false;
@@ -112,10 +112,9 @@ public class Player extends Thread {
                         // 방에 입장하지 못하였을 때 플레이어에게 전송할 패킷(106)
                         sendPacket("106", "reject", "");
                     }
-                } else if (room.getRoomName().equals(name)) {
+                } else if (room.getRoomName().equals(name)) { // 이미 플레이 중인 방에 다시 접속할 경우
                     if (room.recoverPlayer(this)) {
                         sendPacket("105", room.getRoomName(), "");
-
                     } else {
                         // 복구 실패 시
                         sendPacket("106", "reject", "");
@@ -126,10 +125,8 @@ public class Player extends Thread {
                 }
                 break;
             case "201": // 방의 초기 환경 요청 코드
-                // 기존에 입장된 플레이어들을 전송
-                room.sendOldPlayers(this);
-                // 기존에 드로우된 카드들을 전송
-                room.sendDrawnCards(this);
+                // 기존 방의 환경을 전송
+                room.sendAllEnvs(this);
 
                 break;
             case "202": // 방 퇴장 요청 코드
@@ -216,7 +213,7 @@ public class Player extends Thread {
         }
     }
 
-    private void sendPacket(String code, String name, String action) {
+    synchronized void sendPacket(String code, String name, String action) {
         Packet packet = new Packet(code, name, action);
         try {
             oos.writeObject(packet);
@@ -324,16 +321,16 @@ public class Player extends Thread {
         sendPacket("209", "", "");
     }
 
+    public int getPlayerState() {
+        return state;
+    }
+
     public void setPlayerState(int state) {
         this.state = state;
         room.sendStatus(this);
-        if(state == 9) { // 더블다운
+        if (state == 9) { // 더블다운
             this.state = 2; // 여전히 플레이
         }
-    }
-
-    public int getPlayerState() {
-        return state;
     }
 
     public int getCoin() {
@@ -353,17 +350,11 @@ public class Player extends Thread {
     }
 
     public boolean isPlaying() {
-        if (state == 2) {
-            return true;
-        }
-        return false;
+        return state == 2;
     }
 
     public boolean isReady() {
-        if (state == 1) {
-            return true;
-        }
-        return false;
+        return state == 1;
     }
 
     public void sendCoin() {

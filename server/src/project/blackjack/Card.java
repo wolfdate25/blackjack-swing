@@ -1,10 +1,8 @@
 package project.blackjack;
 
-import javax.swing.*;
-
 public class Card {
-    private int value;
-    private String name;
+    private final int value;
+    private final String name;
 
     public Card(int value, String name) {
 

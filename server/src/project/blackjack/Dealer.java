@@ -5,9 +5,9 @@ import java.util.Vector;
 public class Dealer {
     private int score;
 
-    private Room room;
+    private final Room room;
 
-    private Vector<Card> cards;
+    private final Vector<Card> cards;
 
     public Dealer(Room room) {
         this.room = room;

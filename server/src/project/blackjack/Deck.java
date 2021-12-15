@@ -11,7 +11,8 @@ public class Deck {
         genNewDeck();
     }
 
-    private void genNewDeck() {
+    public void genNewDeck() {
+        cards.clear();
         Card c2 = new Card(2, "c2");
         Card c3 = new Card(3, "c3");
         Card c4 = new Card(4, "c4");

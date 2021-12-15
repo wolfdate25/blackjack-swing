@@ -1,15 +1,11 @@
 package project.blackjack;
 
 import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
-import javax.swing.text.StyleContext;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Vector;
 
 public class Room extends JFrame {
@@ -52,14 +48,14 @@ public class Room extends JFrame {
         // Player Setting
         addPlayer(player);
 
-        // Env initializing
-        game.requestRoomEnv();
-
         // Add dealer
         dealer = new Dealer();
 
-
+        // Set coin field
         setCoinField(player.getCoin());
+
+        // Env initializing
+        game.requestRoomEnv();
 
         // where is keyboard focus
         chatField.requestFocus();
@@ -165,7 +161,6 @@ public class Room extends JFrame {
             field.setCoinLabel(idx, 0);
             chatArea.append("[" + player.getName() + "]님이 입장하셨습니다.\n");
         }
-
     }
 
     // {name}을 가진 플레이어를 제거한다.

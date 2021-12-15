@@ -1,20 +1,14 @@
 package project.blackjack;
 
 import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
-import javax.swing.text.StyleContext;
-import java.awt.*;
-import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Locale;
 
 public class Server extends JFrame {
+    ServerSocket socket;
     private JPanel rootPanel;
     private JTextArea logArea;
     private JLabel userCount;
     private JLabel roomCount;
-
-    ServerSocket socket;
 
     public Server() {
         setContentPane(rootPanel);

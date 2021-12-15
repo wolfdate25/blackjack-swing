@@ -5,12 +5,11 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public class LobbyService {
-    private Vector<Player> playerList;
-    private Vector<Room> roomList;
     Server frame;
     JDBC db;
-
     int codeIndex = 0;
+    private final Vector<Player> playerList;
+    private final Vector<Room> roomList;
 
     public LobbyService(Server frame) {
         playerList = new Vector<>(50);

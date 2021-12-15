@@ -8,9 +8,6 @@ import java.util.Vector;
 
 public class Field extends JPanel {
 
-    Vector<JLabel> drawnCards = new Vector<>(52); // 필드에 올라갈 카드
-    Font font = new Font("Arial", Font.PLAIN, 24); // 사용할 폰트
-    private int timer = 0;
     private final JLabel dealerScoreLabel;
     private final JLabel p1ScoreLabel;
     private final JLabel p2ScoreLabel;
@@ -29,6 +26,9 @@ public class Field extends JPanel {
     private final TitledBorder p2TitleBorder;
     private final TitledBorder p3TitleBorder;
     private final TitledBorder p4TitleBorder;
+    Vector<JLabel> drawnCards = new Vector<>(52); // 필드에 올라갈 카드
+    Font font = new Font("Arial", Font.PLAIN, 24); // 사용할 폰트
+    private int timer = 0;
 
 
     public Field() {

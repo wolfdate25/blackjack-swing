@@ -1,17 +1,13 @@
 package project.blackjack;
 
-import javax.swing.*;
 import java.sql.*;
 
 public class JDBC {
 
-    private Connection getConn() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:player.db");
-    }
     public JDBC() {
 
-        try(Connection connection = getConn();
-            Statement statement = connection.createStatement();) {
+        try (Connection connection = getConn();
+             Statement statement = connection.createStatement()) {
             // create a database connection
             statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
@@ -34,6 +30,10 @@ public class JDBC {
         }
     }
 
+    private Connection getConn() throws SQLException {
+        return DriverManager.getConnection("jdbc:sqlite:player.db");
+    }
+
     public boolean playerLogin(String name, String password) {
         ResultSet rs;
         String sql = "SELECT * FROM player WHERE name = ?";
@@ -41,12 +41,12 @@ public class JDBC {
         try (PreparedStatement query = getConn().prepareStatement(sql)) {
             query.setString(1, name);
 
-                rs = query.executeQuery();
-                if(rs.next()) {
-                    if (rs.getString("password").equals(password)) {
-                        return true;
-                    }
+            rs = query.executeQuery();
+            if (rs.next()) {
+                if (rs.getString("password").equals(password)) {
+                    return true;
                 }
+            }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -62,7 +62,7 @@ public class JDBC {
             query.setString(1, name);
 
             rs = query.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 return rs.getInt("coin");
             }
 
@@ -72,8 +72,8 @@ public class JDBC {
         return 0;
     }
 
-    public int setPlayerCoin(String name,int coin) {
-        int result =0 ;
+    public int setPlayerCoin(String name, int coin) {
+        int result = 0;
         String sql = "UPDATE player SET coin = ? WHERE name = ?";
 
         try (PreparedStatement query = getConn().prepareStatement(sql)) {
