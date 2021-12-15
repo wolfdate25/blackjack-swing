@@ -13,7 +13,12 @@ public class Server extends JFrame {
     public Server() {
         setContentPane(rootPanel);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle("Server Logger");
+        setTitle("서버 로그");
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (Exception e) {
+
+        }
         pack();
         setVisible(true);
 

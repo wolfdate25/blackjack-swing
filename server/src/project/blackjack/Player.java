@@ -52,7 +52,6 @@ public class Player extends Thread {
 //                logout();
                 break;
             }
-            service.frame.appendText(packet.code + " " + packet.name + " " + packet.action);
             codeAction(packet);
 
         }
@@ -80,6 +79,7 @@ public class Player extends Thread {
         if (username == null || username.equals("")) { // 로그인 안한 사용자 감지
             return;
         }
+        service.frame.appendText(username + ": " + packet.code + " " + packet.name + " " + packet.action);
         switch (packet.code) {
             case "102": // 방 목록 요청 코드
                 service.frame.appendText("방목록 요청 동작 실행");

@@ -12,6 +12,12 @@ public class Launcher extends JFrame {
     public Launcher() {
         setContentPane(rootPanel);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setTitle("서버 개설");
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (Exception e) {
+
+        }
         pack();
         setVisible(true);
 
