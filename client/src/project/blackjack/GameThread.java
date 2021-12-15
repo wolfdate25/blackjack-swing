@@ -59,8 +59,8 @@ public class GameThread extends Thread {
             Packet packet = readPacket();
             if (packet == null) break;
             if (packet.code == "") break;
-            String msg = String.format("Code : %s, Username: %s, action: %s", packet.code, packet.name, packet.action);
-            System.out.println(msg);
+//            String msg = String.format("Code : %s, Username: %s, action: %s", packet.code, packet.name, packet.action);
+//            System.out.println(msg);
 
             lobbyAction(packet);
             if (room != null && room.isShowing()) {

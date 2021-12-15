@@ -251,7 +251,7 @@ public class Field extends JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        System.out.println("다시 그려짐");
+//        System.out.println("다시 그려짐");
     }
 
     public void paintScore(int target, int score) {

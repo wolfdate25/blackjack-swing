@@ -228,7 +228,7 @@ public class Player extends Thread {
         try {
             packet = (Packet) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("패킷 읽기 실패");
+//            System.out.println("패킷 읽기 실패");
             logout();
             return null;
         }
@@ -254,9 +254,9 @@ public class Player extends Thread {
 
     public void logout() {
         try {
-//            if (client_socket.isClosed()) {
-//                return;
-//            }
+            if (client_socket.isClosed()) {
+                return;
+            }
 
             // 코인 저장
             service.db.setPlayerCoin(getUsername(), getCoin());
@@ -267,13 +267,13 @@ public class Player extends Thread {
             }
 
             // 연결 끊기
-            oos.close();
-            ois.close();
-            client_socket.close();
             service.removePlayer(this);
             service.frame.appendText(username + "님이 로그아웃하였습니다.");
             service.refreshPlayerCount();
 
+            oos.close();
+            ois.close();
+            client_socket.close();
 //            if (room != null) {
 //                room.removePlayer(this);
 //                room = null;
