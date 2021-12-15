@@ -30,7 +30,12 @@ public class Room extends JFrame {
     private JButton surrenderButton;
 
     public Room(GameThread thread, String roomName, Player player) {
-        setTitle("Blackjack");
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (Exception e) {
+
+        }
+        setTitle("블랙잭 게임 [방제: " + roomName + "]");
         setContentPane(rootPanel);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 

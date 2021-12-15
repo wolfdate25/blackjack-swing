@@ -18,7 +18,12 @@ public class Lobby extends JFrame {
     private JButton loginButton;
 
     public Lobby(GameThread game) {
-        setTitle("Lobby");
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (Exception e) {
+
+        }
+        setTitle("로비");
         setContentPane(rootPanel);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -93,8 +98,8 @@ public class Lobby extends JFrame {
     }
 
     public void setLabel(String name, int coin) {
-        userLabel.setText("username: " + name);
-        coinLabel.setText("coin: " + coin);
+        userLabel.setText("이름: " + name);
+        coinLabel.setText("코인: " + coin);
     }
 
     class Room {

@@ -12,8 +12,14 @@ public class Connect extends JFrame {
     private JTextField addressField;
 
     public Connect() {
-        setTitle("Login");
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (Exception e) {
+
+        }
+        setTitle("접속");
         setContentPane(rootPanel);
+
         pack();
         setVisible(true);
 

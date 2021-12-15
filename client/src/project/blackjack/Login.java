@@ -12,7 +12,12 @@ public class Login extends JDialog {
     private JTextField nameField;
 
     public Login(GameThread game) {
-        setTitle("Login");
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (Exception e) {
+
+        }
+        setTitle("로그인");
         setContentPane(contentPane);
         getRootPane().setDefaultButton(buttonOK);
         pack();
