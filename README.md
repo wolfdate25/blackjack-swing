@@ -4,3 +4,5 @@
 
 
 미구현 - 딜러 카드 가림막
+
+![이미지 1](https://github.com/wolfdate25/blackjack-swing/blob/master/image.png)
