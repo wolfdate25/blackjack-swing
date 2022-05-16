@@ -1,5 +1,6 @@
 # blackjack-swing
-네트워크 프로그래밍 기말 프로젝트
+네트워크 프로그래밍 - 기말 프로젝트
+
 제약 - objectstream, bytestream
 
 
